@@ -21,14 +21,11 @@ CONTRIBUTING.md
 
 ## Usage
 
-### Use from a separate repository
+### From a separate repository
 
-Reference the published action by its `owner/repo@ref` in any repository. Pass
-values to each input through the `with:` block. To let whoever triggers the run
-type values (e.g. which `files` to copy) from the Actions tab, declare
-`workflow_dispatch` inputs and forward them with `${{ inputs.* }}`.
+Create a new file in the repo named `.github/workflows/sync-shared-files.yaml`.
 
-Add the following in a new file named `.github/workflows/sync-shared-files.yaml` in the relevant repo:
+Paste in the following code:
 
 ```yaml
 name: Sync shared files
@@ -85,6 +82,8 @@ Notes for cross-repo use:
 - **Hardcode instead of prompting** by skipping the `workflow_dispatch` inputs
   and setting values directly, e.g. `files: |` followed by your selectors.
 
+### Default usage
+
 ```yaml
 name: Sync shared files
 
@@ -112,8 +111,6 @@ jobs:
           mode: push                   # or "pr"
           dry-run: "false"
 ```
-
-
 
 ### Open pull requests instead of pushing
 

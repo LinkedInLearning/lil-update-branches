@@ -21,6 +21,70 @@ CONTRIBUTING.md
 
 ## Usage
 
+### Use from a separate repository
+
+Reference the published action by its `owner/repo@ref` in any repository. Pass
+values to each input through the `with:` block. To let whoever triggers the run
+type values (e.g. which `files` to copy) from the Actions tab, declare
+`workflow_dispatch` inputs and forward them with `${{ inputs.* }}`.
+
+Add the following in a new file named `.github/workflows/sync-shared-files.yaml` in the relevant repo:
+
+```yaml
+name: Sync shared files
+
+on:
+  workflow_dispatch:
+    inputs:
+      source-branch:
+        description: "Branch to copy files FROM (blank = default branch)"
+        required: false
+        default: ""
+      files:
+        description: "Files/dirs/globs to copy, comma or newline separated (blank = default list)"
+        required: false
+        default: ""
+      mode:
+        description: "How changes are applied (blank = write immediately)"
+        required: false
+        default: push
+        type: choice
+        options: [push, pr]
+      dry-run:
+        description: "Preview changes without writing (blank = no preview)"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write       # required for push mode
+  pull-requests: write  # required for pr mode
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: LinkedInLearning/lil-update-branches@v1
+        with:
+          source-branch: ${{ inputs.source-branch }}
+          files: ${{ inputs.files }}
+          mode: ${{ inputs.mode }}
+          dry-run: ${{ inputs.dry-run }}
+```
+
+Notes for cross-repo use:
+
+- **No checkout needed.** When you reference a published action by
+  `owner/repo@ref`, GitHub fetches it automatically — you do **not** need an
+  `actions/checkout` step (that's only required when using the local `./` form
+  inside this action's own repo).
+- **Pin a ref.** Use a tag (`@v1`), branch, or commit SHA. A SHA is the most
+  secure (`@<full-sha>`).
+- **Omit an input** to use its default. Leaving `files` blank falls back to the
+  built-in default list.
+- **Hardcode instead of prompting** by skipping the `workflow_dispatch` inputs
+  and setting values directly, e.g. `files: |` followed by your selectors.
+
 ```yaml
 name: Sync shared files
 
@@ -48,6 +112,8 @@ jobs:
           mode: push                   # or "pr"
           dry-run: "false"
 ```
+
+
 
 ### Open pull requests instead of pushing
 

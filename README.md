@@ -61,7 +61,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: LinkedInLearning/lil-update-branches@v1
+      - uses: LinkedInLearning/lil-update-branches@v1.0.0
         with:
           source-branch: ${{ inputs.source-branch }}
           files: ${{ inputs.files }}
@@ -101,7 +101,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: LinkedInLearning/lil-update-branches@v1
+      - uses: LinkedInLearning/lil-update-branches@v1.0.0
         with:
           # All inputs are optional; defaults shown below.
           source-branch: ""            # default: repository default branch

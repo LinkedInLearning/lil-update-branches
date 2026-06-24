@@ -2,6 +2,10 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
+  moduleNameMapper: {
+    "^@actions/core$": "<rootDir>/node_modules/@actions/core/lib/core.js",
+    "^@actions/github$": "<rootDir>/node_modules/@actions/github/lib/github.js",
+  },
   testMatch: ["**/__tests__/**/*.test.ts"],
   collectCoverageFrom: ["src/**/*.ts", "!src/main.ts"],
   coverageThreshold: {

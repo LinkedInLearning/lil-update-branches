@@ -21,37 +21,28 @@ CONTRIBUTING.md
 
 ## Usage
 
-### From a separate repository
+### Use from a separate repository
 
-Create a new file in the repo named `.github/workflows/sync-shared-files.yaml`.
-
-Paste in the following code:
+Reference the published action by its `owner/repo@ref` in any repository. Pass
+values to each input through the `with:` block. To let whoever triggers the run
+type values (e.g. which `files` to copy) from the Actions tab, declare
+`workflow_dispatch` inputs and forward them with `${{ inputs.* }}`:
 
 ```yaml
+# .github/workflows/sync-shared-files.yaml (in YOUR repo)
 name: Sync shared files
 
 on:
   workflow_dispatch:
     inputs:
       source-branch:
-        description: "Branch to copy files FROM (blank = default branch)"
+        description: "Source branch to copy files from (blank = default branch)"
         required: false
         default: ""
       files:
-        description: "Files/dirs/globs to copy, comma or newline separated (blank = default list)"
+        description: "Comma or newline separated list of files/dirs/globs to copy (blank = default list)"
         required: false
         default: ""
-      mode:
-        description: "How changes are applied (blank = write immediately)"
-        required: false
-        default: push
-        type: choice
-        options: [push, pr]
-      dry-run:
-        description: "Preview changes without writing (blank = no preview)"
-        required: false
-        default: false
-        type: boolean
 
 permissions:
   contents: write       # required for push mode
@@ -61,18 +52,16 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: LinkedInLearning/lil-update-branches@v1.0.0
+      - uses: LinkedInLearning/lil-update-branches@v1
         with:
           source-branch: ${{ inputs.source-branch }}
           files: ${{ inputs.files }}
-          mode: ${{ inputs.mode }}
-          dry-run: ${{ inputs.dry-run }}
 ```
 
 Notes for cross-repo use:
 
 - **No checkout needed.** When you reference a published action by
-  `owner/repo@ref`, GitHub fetches it automatically — you do **not** need an
+  `owner/repo@ref`, GitHub fetches it automatically - you do **not** need an
   `actions/checkout` step (that's only required when using the local `./` form
   inside this action's own repo).
 - **Pin a ref.** Use a tag (`@v1`), branch, or commit SHA. A SHA is the most
@@ -81,8 +70,6 @@ Notes for cross-repo use:
   built-in default list.
 - **Hardcode instead of prompting** by skipping the `workflow_dispatch` inputs
   and setting values directly, e.g. `files: |` followed by your selectors.
-
-### Default usage
 
 ```yaml
 name: Sync shared files
@@ -101,7 +88,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: LinkedInLearning/lil-update-branches@v1.0.0
+      - uses: LinkedInLearning/lil-update-branches@v1.0.1
         with:
           # All inputs are optional; defaults shown below.
           source-branch: ""            # default: repository default branch
@@ -112,10 +99,12 @@ jobs:
           dry-run: "false"
 ```
 
+
+
 ### Open pull requests instead of pushing
 
 ```yaml
-      - uses: LinkedInLearning/lil-update-branches@v1
+      - uses: LinkedInLearning/lil-update-branches@v1.0.1
         with:
           mode: pr
 ```
@@ -127,7 +116,7 @@ open PR on re-runs instead of opening duplicates.
 ### Preview changes (dry-run)
 
 ```yaml
-      - uses: LinkedInLearning/lil-update-branches@v1
+      - uses: LinkedInLearning/lil-update-branches@v1.0.1
         with:
           dry-run: "true"
 ```
@@ -150,9 +139,9 @@ open PR on re-runs instead of opening duplicates.
 
 Each entry in `files` may be:
 
-- an **exact path** — e.g. `LICENSE`
-- a **directory prefix** — e.g. `.github/` or `src` (copies everything under it, recursively)
-- a **glob** — e.g. `**/*.md`, `*.yml`
+- an **exact path** - e.g. `LICENSE`
+- a **directory prefix** - e.g. `.github/` or `src` (copies everything under it, recursively)
+- a **glob** - e.g. `**/*.md`, `*.yml`
 
 Example:
 
@@ -191,7 +180,7 @@ npm run build   # type-check + bundle dist/
 npm run all     # lint + type-check + test + bundle
 ```
 
-The committed `dist/` bundle is what the runtime executes — always run
+The committed `dist/` bundle is what the runtime executes - always run
 `npm run all` and commit `dist/` after changing `src/`.
 
 ## License

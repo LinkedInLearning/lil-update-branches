@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const inputs: Record<string, string> = {
   "source-branch": "",
   files: "LICENSE",

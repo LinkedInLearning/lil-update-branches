@@ -1,0 +1,56 @@
+name: "Update Branches"
+description: "Copy selected files from one branch to all other branches in the repository."
+author: "LinkedIn"
+branding:
+  icon: "git-branch"
+  color: "blue"
+
+inputs:
+  source-branch:
+    description: "Branch to copy files FROM. Defaults to the repository's default branch."
+    required: false
+    default: ""
+  files:
+    description: "Newline/comma-separated paths, directory prefixes, and/or globs to copy. When empty, a default list is used (LICENSE, NOTICE, README.md, CONTRIBUTING.md, .vscode/, .devcontainer/, .github/)."
+    required: false
+    default: ""
+  include-branches:
+    description: "Glob(s) of target branches to include. Defaults to all branches."
+    required: false
+    default: "*"
+  exclude-branches:
+    description: "Glob(s) of target branches to exclude. The source branch is always excluded."
+    required: false
+    default: ""
+  mode:
+    description: "How changes land: 'push' (commit directly) or 'pr' (open a pull request per branch)."
+    required: false
+    default: "push"
+  dry-run:
+    description: "If 'true', compute and report planned changes without making any commits/pushes/PRs."
+    required: false
+    default: "false"
+  commit-message:
+    description: "Commit message. {source-branch} is substituted."
+    required: false
+    default: "chore: sync shared files from {source-branch}"
+  pr-title:
+    description: "Pull request title (pr mode). {source-branch} is substituted."
+    required: false
+    default: "chore: sync shared files from {source-branch}"
+  token:
+    description: "Token used for API/Git operations."
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  updated-branches:
+    description: "JSON array of branches that received changes."
+  skipped-branches:
+    description: "JSON array of {branch, reason} for skipped/failed branches."
+  summary:
+    description: "Human-readable summary of the run."
+
+runs:
+  using: "node20"
+  main: "dist/index.js"

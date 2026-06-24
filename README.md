@@ -52,7 +52,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: LinkedInLearning/lil-update-branches@v1
+      - uses: LinkedInLearning/lil-update-branches@v1.0.1
         with:
           source-branch: ${{ inputs.source-branch }}
           files: ${{ inputs.files }}
